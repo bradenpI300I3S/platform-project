@@ -1,28 +1,51 @@
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    mySprite.vy = -90
-    projectile = sprites.createProjectileFromSprite(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . f . . . . . . . . . . . . . 
-        . . f . . . . . . . . . . . . . 
-        . . f . . . . . . . . . . . . . 
-        . . f . . . . . . . . . . . . . 
-        . . f . . . . . . . . . . . . . 
-        . . f . . . . . . . . . . . . . 
-        . 2 f 2 . . . . . . . . . . . . 
-        . 2 2 2 . . . . . . . . . . . . 
-        . 4 2 4 . . . . . . . . . . . . 
-        . 4 4 4 . . . . . . . . . . . . 
-        . 5 4 5 . . . . . . . . . . . . 
-        . . 5 . . . . . . . . . . . . . 
-        `, mySprite, 0, 80)
+    if (Start) {
+        mySprite.vy = -70
+        projectile = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . f . . . . . . . . . . . . . 
+            . . f . . . . . . . . . . . . . 
+            . . f . . . . . . . . . . . . . 
+            . . f . . . . . . . . . . . . . 
+            . . f . . . . . . . . . . . . . 
+            . . f . . . . . . . . . . . . . 
+            . 2 f 2 . . . . . . . . . . . . 
+            . 2 2 2 . . . . . . . . . . . . 
+            . 4 2 4 . . . . . . . . . . . . 
+            . 4 4 4 . . . . . . . . . . . . 
+            . 5 4 5 . . . . . . . . . . . . 
+            . . 5 . . . . . . . . . . . . . 
+            `, mySprite, 0, 80)
+    }
+})
+function Level2 () {
+    tiles.setTilemap(tilemap`level3`)
+    info.startCountdown(1)
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 4))
+    PlayerVelocity = PlayerVelocity * 1.2
+}
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile12`, function (sprite, location) {
+    Level2()
+})
+function Level1 () {
+    tiles.setTilemap(tilemap`level1`)
+    info.startCountdown(1)
+}
+info.onCountdownEnd(function () {
+    mySprite.ay = 175
+    mySprite.vx = PlayerVelocity
+    Start = true
 })
 let projectile: Sprite = null
 let mySprite: Sprite = null
-tiles.setTilemap(tilemap`level1`)
-tiles.setWallAt(tiles.getTileLocation(1, 6), false)
+let PlayerVelocity = 0
+let Start = false
+Level1()
+Start = false
+PlayerVelocity = 40
 mySprite = sprites.create(img`
     . . . . . . . f f f f f f . . . 
     . . . . . f f e e e e f f f . . 
@@ -41,15 +64,11 @@ mySprite = sprites.create(img`
     . . . . . . . f f f f f f . . . 
     . . . . . . . . f f f . . . . . 
     `, SpriteKind.Player)
-tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 6))
-controller.moveSprite(mySprite, 100, 0)
-scene.cameraFollowSprite(mySprite)
 mySprite.setStayInScreen(true)
-game.onUpdate(function () {
-    if (mySprite.isHittingTile(CollisionDirection.Left) || mySprite.isHittingTile(CollisionDirection.Top)) {
+scene.cameraFollowSprite(mySprite)
+tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 4))
+forever(function () {
+    if (mySprite.isHittingTile(CollisionDirection.Right) || mySprite.isHittingTile(CollisionDirection.Bottom)) {
         mySprite.destroy(effects.disintegrate, 500)
     }
-})
-forever(function () {
-    mySprite.ay = 250
 })
