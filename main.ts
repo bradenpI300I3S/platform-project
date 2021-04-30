@@ -1,6 +1,6 @@
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (Start) {
-        mySprite.vy = -70
+    if (Start == true) {
+        mySprite.vy = -63
         projectile = sprites.createProjectileFromSprite(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -21,17 +21,24 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
             `, mySprite, 0, 80)
     }
 })
-function Level2 () {
-    tiles.setTilemap(tilemap`level3`)
+function Beginning_of_level () {
+    Start = false
+    mySprite.ay = 0
+    mySprite.vy = 0
+    mySprite.vx = 0
     info.startCountdown(1)
+}
+function Level2 () {
     tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 4))
-    PlayerVelocity = PlayerVelocity * 1.2
+    Beginning_of_level()
+    tiles.setTilemap(tilemap`level3`)
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile12`, function (sprite, location) {
     Level2()
 })
 function Level1 () {
     tiles.setTilemap(tilemap`level1`)
+    PlayerVelocity = 40
     info.startCountdown(1)
 }
 info.onCountdownEnd(function () {
@@ -39,13 +46,15 @@ info.onCountdownEnd(function () {
     mySprite.vx = PlayerVelocity
     Start = true
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile36`, function (sprite, location) {
+	
+})
+let PlayerVelocity = 0
 let projectile: Sprite = null
 let mySprite: Sprite = null
-let PlayerVelocity = 0
 let Start = false
 Level1()
 Start = false
-PlayerVelocity = 40
 mySprite = sprites.create(img`
     . . . . . . . f f f f f f . . . 
     . . . . . f f e e e e f f f . . 
